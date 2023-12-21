@@ -7,7 +7,15 @@ dotenv.config({
 })
 
 
-connectDB();
+connectDB()
+.then(()=>{
+    app.listen(process.env.PORT || 8000, ()=>{
+        console.log(`Server is running at port : ${process.env.PORT}`)
+    })
+})
+.catch((err)=>{
+    console.log("MongoDb Connection failed",err);
+})
 
 
 
@@ -20,8 +28,8 @@ const app = express()
 // iife immediately executes ;for cleaning puposes
 ( async () =>{
     try {
-        await mongoose.connect(`${process.env.MONGODB_URI}
-        /${DB_NAME}`)
+        await mongoose.
+        connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
 
         app.on("error",(error)=>{
             console.log("Error : ", error);
