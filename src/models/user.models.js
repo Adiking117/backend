@@ -49,6 +49,7 @@ const userSchema = new Schema({
 
 // function takes some time and uses context of the schema
 // Arrow function does not know the context
+// Define a pre-save middleware that hashes the password before saving
 userSchema.pre("save", async function(next){
 
     if(! this.isModified("password"))
@@ -58,11 +59,13 @@ userSchema.pre("save", async function(next){
     next()
 })
 
+// Define a method to check if the provided password is correct
 userSchema.methods.isPasswordCorrect = async function
 (password){
     return await bcrypt.compare(password,this.password)
 }
 
+// Define a method to generate an access token for the user
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(
         {
@@ -83,9 +86,9 @@ userSchema.methods.generateRefreshToken = function(){
         {
             _id: this._id,
         },
-        process.env.ACCESS_REFRESH_SECRET,
+        process.env.REFRESH_TOKEN_SECRET,
         {
-            expiresIn: process.env.ACCESS_REFRESH_EXPIRY
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
     )
 }
